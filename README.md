@@ -1,1 +1,1 @@
-# Iowa-city-beginner-hikes
+# iowa-city-beginner-hikes
