@@ -1,25 +1,27 @@
 A/B Test Plan
-MKTG:4400 Digital Marketing, Fall 2026. Ella Michalec. Written 9 November 2026, before any data was collected.
+MKTG:4400 Digital Marketing, Fall 2026, Deliverable 3. Ella Michalec. Written 9 November 2026, before any data was collected.
 1. Page and element
-Page: Home page (index.html) of First Steps Trail Guide. Single element changed: the main headline (the H1). Everything else on the page is identical.
-A (control, current): "Start Hiking in Iowa City"
-B (variant): "Never Hiked Before? Start Here in Iowa City"
+Page: Home page of First Steps Trail Guide. Single element changed: the main headline (the H1). Everything else on the page is identical.
+A (control, current page): "Start Hiking in Iowa City", at index.html.
+B (variant): "Never Hiked Before? Start Here in Iowa City", at variant-b.html.
+Why this element: the headline is the first thing a visitor reads, and my site's goal is to get a new hiker to click through to a trail guide. A headline can decide in a few seconds whether a visitor feels the site is meant for them, so it is a likely place for a real effect.
+Protecting rankings: variant-b.html gets a noindex tag and is left out of sitemap.xml, so it does not compete with version A.
 2. Hypothesis
-Prediction: Variant B will get a CLICK rate at least 20 percentage points higher than Variant A.
+Prediction: Variant B will get a higher CLICK rate than Variant A, by about 15 percentage points.
 Reasoning: The site is for people new to hiking. B names that audience directly, which should answer the visitor's first question ("is this for me?") faster than A. I could be wrong: both headlines may be equally clear to the model, so both could score near 100% and show no difference (a ceiling effect).
 3. Model, persona, prompt, and assignment
-Model: Claude in the claude.ai chat app, using the model selected in the app on the day of testing (recorded in results.csv). Memory and chat-history features are off. Every trial is a brand-new chat with no earlier messages, and each chat gets one message only.
-Prompt (the only message in each chat):
-You are Maya, a 20-year-old University of Iowa student. You have never been hiking and own no hiking gear. You are looking for something outdoors to do this weekend and are browsing quickly. You just landed on this web page. Page text:
-[HEADLINE: A or B] [the rest of the home page text, copied from index.html and identical in both variants]
-Answer with exactly one word. CLICK if you would click through to a trail guide from this page. LEAVE if you would close the page.
-Assignment: Trials run in 30 blocks of two, with one A and one B in each block. The order was drawn with a random number generator (Python, seed 20261109) before any trial was run, and I follow it exactly: B A B A A B A B B A A B A B B A B A A B B A B A A B B A A B B A A B A B B A A B A B A B B A A B B A B A B A A B B A A B (Trial 1 is the first letter, trial 2 the second, and so on.)
+Model: Claude, in the claude.ai chat app. I use one model for every trial, record its name and version in results.csv, and do not switch partway. Memory and chat-history features are off. Every trial is a brand-new chat with one message only.
+Page shown: the full text of the page, pasted in the same way every time. Versions A and B differ only in the headline.
+Prompt (the only message in each chat, word for word, except for the page text):
+You are Maya, a 20-year-old University of Iowa student. You have never been hiking and own no hiking gear. You are looking for something outdoors to do this weekend and are browsing quickly. Read this web page and decide whether you would click through to a trail guide from it. Answer CLICK or LEAVE, then give one sentence of reasoning.
+[full page text of version A or B]
+Assignment: Trials run in 50 blocks of two, with one A and one B in each block. The order was drawn with a random number generator (Python, seed 20261109) before any trial was run, and I follow it exactly: B A B A A B A B B A A B A B B A B A A B B A B A A B B A A B B A A B A B B A A B A B A B B A A B B A B A B A A B B A A B B A A B A B A B A B B A A B B A B A A B B A B A B A B A B A A B A B B A A B B A (Trial 1 is the first letter, trial 2 the second, and so on.)
 4. Primary outcome
-CLICK rate: the share of trials in each variant where the model's answer is exactly CLICK. Every answer is logged in results.csv (trial number, variant, full answer). An answer that is not exactly CLICK or LEAVE is logged and re-run once in a new chat with the same variant.
+CLICK rate: the share of trials in each version where the first word of the answer is CLICK. Every full answer, including the reasoning sentence, is logged in results.csv (trial number, version, date, full output). An answer that does not start with CLICK or LEAVE is kept in the log and re-run once in a new chat with the same version. I do not drop trials.
 5. Sample size and timing
-30 trials per variant (60 total). I will not stop early or look at the counts before all 60 are done. I expect to finish by Friday 13 November 2026 (the project deadline is 17 November, so this leaves a few days of buffer).
+50 trials per version (100 total). I will not stop early or look at the counts before all 100 are done. Version B will be built and published by 11 November. I will start trials on 12 November and expect to finish by Monday 16 November 2026, one day before the 17 November launch deadline. If anything changes after launch, I will record the date and reason in the report.
 6. Comparison and decision rule
-Comparison: B's CLICK rate minus A's CLICK rate, tested with Fisher's exact test (two-sided, alpha = 0.05), since the sample is small.
-Supports the hypothesis: B is higher than A by at least 20 percentage points and p < 0.05.
-Does not support it: a smaller difference, no difference, or A higher than B. I will report any such result as it comes out.
-Limit: with 30 trials per variant, only a large difference can reach significance, so a non-significant result does not prove the headlines perform the same.
+Comparison: B's CLICK rate minus A's CLICK rate, tested with Fisher's exact test (two-sided, alpha = 0.05), with the 95% confidence interval for the difference.
+Supports the hypothesis: B is higher than A and p < 0.05.
+Does not support it: no difference, a difference that is not significant, or A higher than B. I will report any such result as it comes out.
+Limit: with 50 trials per version, only a fairly large difference can reach significance, so a non-significant result does not prove the headlines perform the same. An AI visitor also cannot show how a real customer would react.
